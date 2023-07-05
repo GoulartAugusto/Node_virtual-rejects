@@ -28,13 +28,17 @@ const Event = mongoose.model("newEvent")
 
 app.post("/new-event", async(req, res) => {
     
-    const { thumbnail, eventTitle, eventTime } = req.body
+    const { thumbnail, eventTitle, eventTime, eventType, platform, description, eventLink } = req.body
 
     try {
         await Event.create({
             thumbnail,
             eventTitle,
             eventTime,
+            eventType,
+            platform,
+            description,
+            eventLink
         })
         .res.send({ status: "Look like a new event was created!" })
     } catch (error) {
@@ -50,6 +54,28 @@ app.get("/getAllEvent", async(req, res) => {
         console.log(error)
     }
 })
+
+// get by ID Method
+app.get('/getOne/:id', async(req, res) => {
+    try {   
+        const data = await Event.findById(req.params.id)
+        res.json(data)
+    } catch (error) {
+        res.status(500).json({ message: error })      
+    }
+})
+
+// search a event by eventTitle API for the search bar
+
+app.get('/searchOne/:eventTitle', async(req, res) => {
+    try {
+        const data = await Event.findOne(req.params.eventTitle)
+        res.json(data)
+    } catch (error) {
+        res.status(500).json({ message: error })
+    }
+})
+
 
 app.listen(5000, ()=>{
     console.log("Server started");
